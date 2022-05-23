@@ -25,7 +25,11 @@ def CheckLogin():
 
 @app.route('/questions', methods=['POST'])
 def PostQuestion():
-	jwt_utils.decode_token(request.headers.get('Authorization'))
+	CheckAdmin()
+
+def CheckAdmin():
+	if(jwt_utils.decode_token(request.headers.get('Authorization'))!='quiz-app-admin'):
+		return '', 401
 
 
 if __name__ == "__main__":
