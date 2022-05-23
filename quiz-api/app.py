@@ -3,6 +3,8 @@ import jwt_utils
 
 app = Flask(__name__)
 
+token = ''
+
 @app.route('/')
 def hello_world():
 	x = 'world'
@@ -16,9 +18,15 @@ def GetQuizInfo():
 def CheckLogin():
 	payload = request.get_json()
 	if(payload['password']=="Vive l'ESIEE !"):
-		return { 'token' : jwt_utils.build_token() }
+		token = jwt_utils.build_token()
+		return { 'token' : token }
 	else:
 		return '', 401
+
+@app.route('/questions', methods=['POST'])
+def PostQuestion():
+	jwt_utils.decode_token(request.headers.get('Authorization'))
+
 
 if __name__ == "__main__":
     app.run(ssl_context='adhoc')
