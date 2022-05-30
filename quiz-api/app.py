@@ -31,7 +31,7 @@ def PostQuestion():
 	request.headers.get('Authorization')
 	#récupèrer un l'objet json envoyé dans le body de la requète
 	question = request.get_json()
-	return questionServices.createQuestion(question)
+	return questionServices.checkQuestionPosition(question)
     	
 
 if __name__ == "__main__":
