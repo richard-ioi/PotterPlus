@@ -1,32 +1,12 @@
 from flask import Flask, request
 from importlib_metadata import method_cache
 
-from jwt_utils import build_token
+from utils.jwt_utils import build_token
 import service.questionServices as questionServices
+import service.loginService as loginServices
 import sqlite3
 
 app = Flask(__name__)
-
-#création d'un objet connection
-db_connection = sqlite3.connect('../db.db')
-# set the sqlite connection in "manual transaction mode"
-# (by default, all execute calls are performed in their own transactions, not what we want)
-db_connection.isolation_level = None
-
-# start transaction
-sqlite3.cursor.execute("begin")
-
-# save the question to db
-insertion_result = cur.execute(
-	f"insert into Question (title) values"
-	f"('{input_question.title}')")
-
-#send the request
-sqlite3.cursor.execute("commit")
-
-#in case of exception, roolback the transaction
-sqlite3.cursor.execute('rollback')
-
 
 @app.route('/')
 def hello_world():
@@ -51,11 +31,7 @@ def PostQuestion():
 	request.headers.get('Authorization')
 	#récupèrer un l'objet json envoyé dans le body de la requète
 	question = request.get_json()
-
-	if questionServices.IsQuestionValid(question):
-		return questionServices.serialize(question)
-	else:
-		return '', 401
+	return questionServices.createQuestion(question)
     	
 
 if __name__ == "__main__":
