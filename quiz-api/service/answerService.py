@@ -25,6 +25,20 @@ def insertAnswerRequest(answer: Answer):
         request =  f'INSERT INTO answer(QUESTION_ID, TEXT, IS_CORRECT) VALUES ({answer.questionID},"{answer.text}", {answer.isCorrect});'
         return request
 
+def deleteAnswerByQuestionID(questionID):
+    db = connectDB()
+    cursor = db.cursor()
+    cursor.execute("begin")
+    request = f'DELETE FROM ANSWER WHERE QUESTION_ID ="{questionID}";'
+    try:
+        cursor.execute(request)
+        return {'status':'OK'}, 204
+    except Exception as err:
+            #in case of exception, roolback the transaction
+            cursor.execute('rollback')
+            raise err
+
+
 def getAnswersByQuestionID(questionID):
     db = connectDB()
     cursor = db.cursor()

@@ -65,34 +65,6 @@ def insertQuestionRequest(question: Question):
 def getAllQuestions():
     return "SELECT * FROM Question;"
 
-def getQuestionByID(id):
-    db = connectDB()
-    cursor = db.cursor()
-    cursor.execute("begin")
-    request = "SELECT * FROM QUESTION WHERE ID ="+id+";"
-    try:
-        cursor.execute(request)
-        row = cursor.fetchone()
-        print(row)
-        if(row is not None):
-            text = row[1]
-            title = row[2]
-            image = row[3]
-            position = row[4]
-
-            question = Question(id,title,text,image,position)
-            question.possibleAnswers=answerService.getAnswersByQuestionID(id)
-
-            return serialize(question), 200
-        else:
-            return '',401
-    except Exception as err:
-        #in case of exception, roolback the transaction
-        cursor.execute('rollback')
-        raise err
-
-
-
 def createQuestion(question: json):
     print(question)
     #Create new question
@@ -126,6 +98,70 @@ def createQuestion(question: json):
         cursor.execute('rollback')
         raise err
 
+def deleteQuestionByID(id):
+    db = connectDB()
+    cursor = db.cursor()
+    cursor.execute("begin")
+    request = f'DELETE FROM QUESTION WHERE ID ="{id}";'
+    try:
+        cursor.execute(request)
+        if(checkIfQuestionExistsByID(id)):
+            #answerService.deleteAnswerByQuestionID(id)
+            return {'status':'OK'}, 204
+        else:
+            return '',404
+    except Exception as err:
+            #in case of exception, roolback the transaction
+            cursor.execute('rollback')
+            raise err
 
+def getQuestionByID(id):
+    db = connectDB()
+    cursor = db.cursor()
+    cursor.execute("begin")
+    request = f'SELECT * FROM QUESTION WHERE ID ="{id}";'
+    try:
+        cursor.execute(request)
+        row = cursor.fetchone()
+        if(row is not None):
+            text = row[1]
+            title = row[2]
+            image = row[3]
+            position = row[4]
 
+            question = Question(id,title,text,image,position)
+            question.possibleAnswers=answerService.getAnswersByQuestionID(id)
+            return serialize(question), 200
+        else:
+            return '',404
+    except Exception as err:
+        #in case of exception, roolback the transaction
+        cursor.execute('rollback')
+        raise err
 
+def updateQuestionByID(id, question: json):
+    newQuestion = deserialize(question)
+    db = connectDB()
+    cursor = db.cursor()
+    cursor.execute("begin")
+    request = f'UPDATE QUESTION SET TEXT="{newQuestion.text}", TITLE="{newQuestion.title}", IMAGE="{newQuestion.image}", POSITION="{newQuestion.position}" WHERE ID ="{id}";'
+    try:
+        cursor.execute(request)
+        if(checkIfQuestionExistsByID(id)):
+            for answer in newQuestion.possibleAnswers:
+                answer.questionID = id
+                aRequest = answerService.insertAnswerRequest(answer)
+                cursor.execute(aRequest)
+            return {'status':'OK'}, 200
+        else:
+            return '',404
+    except Exception as err:
+        #in case of exception, roolback the transaction
+        cursor.execute('rollback')
+        raise err
+
+def checkIfQuestionExistsByID(id):
+    if(getQuestionByID(id)[1]==404):
+        return False
+    else:
+        return True
