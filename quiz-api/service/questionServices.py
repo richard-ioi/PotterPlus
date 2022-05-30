@@ -81,7 +81,7 @@ def getQuestionByID(id):
             position = row[4]
 
             question = Question(id,title,text,image,position)
-            question.possibleAnswers=answerService.getAnswerByQuestionID(id)
+            question.possibleAnswers=answerService.getAnswersByQuestionID(id)
 
             return serialize(question), 200
         else:

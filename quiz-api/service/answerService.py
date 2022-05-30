@@ -25,7 +25,7 @@ def insertAnswerRequest(answer: Answer):
         request =  f'INSERT INTO answer(QUESTION_ID, TEXT, IS_CORRECT) VALUES ({answer.questionID},"{answer.text}", {answer.isCorrect});'
         return request
 
-def getAnswerByQuestionID(questionID):
+def getAnswersByQuestionID(questionID):
     db = connectDB()
     cursor = db.cursor()
     cursor.execute("begin")
