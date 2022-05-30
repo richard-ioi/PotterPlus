@@ -32,6 +32,14 @@ def PostQuestion():
 	#récupèrer un l'objet json envoyé dans le body de la requète
 	question = request.get_json()
 	return questionServices.createQuestion(question)
+
+@app.route('/questions/<question_id>', methods=['GET'])
+def GetQuestion(question_id):
+    #Récupérer le token envoyé en paramètre
+	request.headers.get('Authorization')
+	#récupèrer un l'objet json envoyé dans le body de la requète
+	#question = request.get_json()
+	return questionServices.getQuestionByID(question_id)
     	
 
 if __name__ == "__main__":

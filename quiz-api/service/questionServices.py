@@ -12,8 +12,25 @@ def IsQuestionValid(question):
 
 
 def serialize(question: Question):
-    print(json.dumps(question.__dict__))
-    return json.dumps(question.__dict__)
+    
+    data = {
+        "text":question.text,
+        "title":question.title,
+        "image":question.image,
+        "position":question.position,
+        "possibleAnswers":[]
+    }
+    for answer in question.possibleAnswers:
+        answerData = {
+            "id":answer.id,
+            "questionID":answer.questionID,
+            "text":answer.text,
+            "isCorrect":answer.isCorrect
+        }
+        data["possibleAnswers"].append(answerData)
+
+    return json.dumps(data)
+    
 
 
 def deserialize(dbJson: json):  
@@ -47,6 +64,34 @@ def insertQuestionRequest(question: Question):
 
 def getAllQuestions():
     return "SELECT * FROM Question;"
+
+def getQuestionByID(id):
+    db = connectDB()
+    cursor = db.cursor()
+    cursor.execute("begin")
+    request = "SELECT * FROM QUESTION WHERE ID ="+id+";"
+    try:
+        cursor.execute(request)
+        row = cursor.fetchone()
+        print(row)
+        if(row is not None):
+            text = row[1]
+            title = row[2]
+            image = row[3]
+            position = row[4]
+
+            question = Question(id,title,text,image,position)
+            question.possibleAnswers=answerService.getAnswerByQuestionID(id)
+
+            return serialize(question), 200
+        else:
+            return '',401
+    except Exception as err:
+        #in case of exception, roolback the transaction
+        cursor.execute('rollback')
+        raise err
+
+
 
 def createQuestion(question: json):
     print(question)
