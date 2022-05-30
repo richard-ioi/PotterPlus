@@ -1,9 +1,12 @@
 from flask import Flask, request
-import jwt_utils
+from importlib_metadata import method_cache
+
+from utils.jwt_utils import build_token
+import service.questionServices as questionServices
+import service.loginService as loginServices
+import sqlite3
 
 app = Flask(__name__)
-
-token = ''
 
 @app.route('/')
 def hello_world():
@@ -15,22 +18,21 @@ def GetQuizInfo():
 	return {"size": 0, "scores": []}, 200
 
 @app.route('/login', methods=['POST'])
-def CheckLogin():
+def SendUserLogin():
 	payload = request.get_json()
-	if(payload['password']=="Vive l'ESIEE !"):
-		token = jwt_utils.build_token()
-		return { 'token' : token }
+	if 'Vive l\'ESIEE !' == payload['password']:
+		return {'token' : build_token()}
 	else:
 		return '', 401
 
 @app.route('/questions', methods=['POST'])
 def PostQuestion():
-	CheckAdmin()
-
-def CheckAdmin():
-	if(jwt_utils.decode_token(request.headers.get('Authorization'))!='quiz-app-admin'):
-		return '', 401
-
+    #Récupérer le token envoyé en paramètre
+	request.headers.get('Authorization')
+	#récupèrer un l'objet json envoyé dans le body de la requète
+	question = request.get_json()
+	return questionServices.createQuestion(question)
+    	
 
 if __name__ == "__main__":
     app.run(ssl_context='adhoc')
