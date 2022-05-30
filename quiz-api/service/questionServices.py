@@ -59,8 +59,6 @@ def createQuestion(question: json):
     print(insertQuestionRequest(newQuestion))
     #Question Request.
     request = insertQuestionRequest(newQuestion)
-
-
     try:
         # save the question to db
         cursor.execute(request)
@@ -77,7 +75,7 @@ def createQuestion(question: json):
         print("Records created successfully")
         return {'status':'OK'}, 200
     except Exception as err:
-        #in case of exception, roolback the transaction
+        #in case of exception, rollback the transaction
         cursor.execute('rollback')
         raise err
 
