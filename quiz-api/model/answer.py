@@ -1,5 +1,4 @@
 # Exemple de création de classe en python
-from cgitb import text
 
 
 class Answer():

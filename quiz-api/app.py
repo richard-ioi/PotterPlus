@@ -31,7 +31,7 @@ def PostQuestion():
 	try:
 		if (decode_token((request.headers.get('Authorization'))[7:])=='quiz-app-admin'):
 			question = request.get_json()
-			return questionServices.createQuestion(question)
+			return questionServices.checkQuestionPosition(question)
 		else:
 			return '',401
 	except Exception:

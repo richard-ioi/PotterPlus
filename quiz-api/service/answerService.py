@@ -17,7 +17,6 @@ def deserialize(answerID: int, answer: json):
         return Answer(-1, answerID, text, isCorrect)
 
 def insertAnswerRequest(answer: Answer):
-    print("InsertAnswer ",  answer.id, answer.text, answer.isCorrect)
     if answer.id != -1:
         request =  f'INSERT INTO answer(ID, QUESTION_ID, TEXT, is_Correct) VALUES ({answer.id},{answer.questionID},"{answer.text}", {answer.isCorrect});'
         return request
