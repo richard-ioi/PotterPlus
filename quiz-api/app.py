@@ -4,8 +4,6 @@ from importlib_metadata import method_cache
 from utils.jwt_utils import build_token
 from utils.jwt_utils import decode_token
 import service.questionServices as questionServices
-import service.loginService as loginServices
-import sqlite3
 
 app = Flask(__name__)
 
@@ -22,17 +20,23 @@ def GetQuizInfo():
 def SendUserLogin():
 	payload = request.get_json()
 	if 'Vive l\'ESIEE !' == payload['password']:
-		return {'token' : build_token()}
+		token=build_token()
+		print(token)
+		return {'token' : token}
 	else:
 		return '', 401
 
 @app.route('/questions', methods=['POST'])
 def PostQuestion():
-    #Récupérer le token envoyé en paramètre
-	request.headers.get('Authorization')
-	#récupèrer un l'objet json envoyé dans le body de la requète
-	question = request.get_json()
-	return questionServices.createQuestion(question)
+	try:
+		if (decode_token((request.headers.get('Authorization'))[7:])=='quiz-app-admin'):
+			question = request.get_json()
+			return questionServices.createQuestion(question)
+		else:
+			return '',401
+	except Exception:
+		return '',401
+	
 
 @app.route('/questions/<question_id>', methods=['GET'])
 def GetQuestion(question_id):
@@ -40,12 +44,24 @@ def GetQuestion(question_id):
 
 @app.route('/questions/<question_id>', methods=['PUT'])
 def UpdateQuestion(question_id):
-	newQuestion = request.get_json()
-	return questionServices.updateQuestionByID(question_id,newQuestion)
+	try:
+		if (decode_token((request.headers.get('Authorization'))[7:])=='quiz-app-admin'):
+			newQuestion = request.get_json()
+			return questionServices.updateQuestionByID(question_id,newQuestion)
+		else:
+			return '',401
+	except Exception:
+		return '',401
 
 @app.route('/questions/<question_id>', methods=['DELETE'])
 def DeleteQuestion(question_id):
-	return questionServices.deleteQuestionByID(question_id)
+	try:
+		if (decode_token((request.headers.get('Authorization'))[7:])=='quiz-app-admin'):
+			return questionServices.deleteQuestionByID(question_id)
+		else:
+			return '',401
+	except Exception:
+		return '',401
     	
 
 if __name__ == "__main__":
