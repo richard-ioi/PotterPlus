@@ -99,6 +99,8 @@ def createQuestion(question: json):
         raise err
 
 def deleteQuestionByID(id):
+    if(checkIfQuestionExistsByID(id)):
+        answerService.deleteAnswerByQuestionID(id)
     db = connectDB()
     cursor = db.cursor()
     cursor.execute("begin")
@@ -106,7 +108,6 @@ def deleteQuestionByID(id):
     try:
         cursor.execute(request)
         if(checkIfQuestionExistsByID(id)):
-            #answerService.deleteAnswerByQuestionID(id)
             return {'status':'OK'}, 204
         else:
             return '',404
