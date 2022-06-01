@@ -1,5 +1,4 @@
 # Exemple de création de classe en python
-from typing import List
 from model.answer import Answer
 
 
