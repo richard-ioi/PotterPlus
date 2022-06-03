@@ -21,7 +21,6 @@ def SendUserLogin():
 	payload = request.get_json()
 	if 'Vive l\'ESIEE !' == payload['password']:
 		token=build_token()
-		print(token)
 		return {'token' : token}
 	else:
 		return '', 401
@@ -38,26 +37,20 @@ def PostQuestion():
 		return '',401
 	
 
-@app.route('/questions/<question_id>', methods=['GET'])
-def GetQuestion(question_id):
-	return questionServices.getQuestionByID(question_id)
+@app.route('/questions/<question_position>', methods=['GET'])
+def GetQuestion(question_position):
+	return questionServices.getQuestionByPosition(question_position)
 
-@app.route('/questions/<question_id>', methods=['PUT'])
-def UpdateQuestion(question_id):
+@app.route('/questions/<question_position>', methods=['PUT'])
+def UpdateQuestion(question_position):
+	newQuestion = request.get_json()
+	return questionServices.updateQuestionByPosition(question_position,newQuestion)
+
+@app.route('/questions/<question_position>', methods=['DELETE'])
+def DeleteQuestion(question_position):
 	try:
 		if (decode_token((request.headers.get('Authorization'))[7:])=='quiz-app-admin'):
-			newQuestion = request.get_json()
-			return questionServices.updateQuestionByID(question_id,newQuestion)
-		else:
-			return '',401
-	except Exception:
-		return '',401
-
-@app.route('/questions/<question_id>', methods=['DELETE'])
-def DeleteQuestion(question_id):
-	try:
-		if (decode_token((request.headers.get('Authorization'))[7:])=='quiz-app-admin'):
-			return questionServices.deleteQuestionByID(question_id)
+			return questionServices.deleteQuestionByPosition(question_position)
 		else:
 			return '',401
 	except Exception:
