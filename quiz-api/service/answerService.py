@@ -31,6 +31,7 @@ def deleteAnswerByQuestionID(questionID):
     request = f'DELETE FROM ANSWER WHERE QUESTION_ID ="{questionID}";'
     try:
         cursor.execute(request)
+        cursor.execute('commit')
         return {'status':'OK'}, 204
     except Exception as err:
             #in case of exception, roolback the transaction
@@ -42,7 +43,7 @@ def getAnswersByQuestionID(questionID):
     db = connectDB()
     cursor = db.cursor()
     cursor.execute("begin")
-    request = "SELECT * FROM ANSWER WHERE QUESTION_ID ="+questionID+" ORDER BY ID;"
+    request = f'SELECT * FROM ANSWER WHERE QUESTION_ID ="{questionID}" ORDER BY ID;'
     answers = []
     try:
         cursor.execute(request)

@@ -13,20 +13,22 @@ def IsQuestionValid(question):
 
 
 def serialize(question: Question):
-    
     data = {
         "text":question.text,
         "title":question.title,
         "image":question.image,
-        "position":question.position,
+        "position":int(question.position),
         "possibleAnswers":[]
     }
     for answer in question.possibleAnswers:
+        isCorrect=True
+        if(answer.isCorrect==0):
+            isCorrect=False
         answerData = {
             "id":answer.id,
             "questionID":answer.questionID,
             "text":answer.text,
-            "isCorrect":answer.isCorrect
+            "isCorrect":isCorrect
         }
         data["possibleAnswers"].append(answerData)
 
@@ -138,16 +140,16 @@ def createQuestion(newQuestion: Question):
         cursor.execute('rollback')
         raise err
 
-def deleteQuestionByID(id):
-    if(checkIfQuestionExistsByID(id)):
+def deleteQuestionByPosition(position):
+    if(checkIfQuestionExistsByPosition(position)):
         answerService.deleteAnswerByQuestionID(id)
     db = connectDB()
     cursor = db.cursor()
     cursor.execute("begin")
-    request = f'DELETE FROM QUESTION WHERE ID ="{id}";'
+    request = f'DELETE FROM QUESTION WHERE POSITION ="{position}";'
     try:
         cursor.execute(request)
-        if(checkIfQuestionExistsByID(id)):
+        if(checkIfQuestionExistsByPosition(position)):
             return {'status':'OK'}, 204
         else:
             return '',404
@@ -156,22 +158,22 @@ def deleteQuestionByID(id):
             cursor.execute('rollback')
             raise err
             
-def getQuestionByID(id):
+def getQuestionByPosition(position):
     db = connectDB()
     cursor = db.cursor()
     cursor.execute("begin")
-    request = f'SELECT * FROM QUESTION WHERE ID ="{id}";'
+    request = f'SELECT * FROM QUESTION WHERE POSITION ="{position}";'
     try:
         cursor.execute(request)
         row = cursor.fetchone()
         if(row is not None):
+            question_id = row[0]
             text = row[1]
             title = row[2]
             image = row[3]
-            position = row[4]
 
-            question = Question(id,title,text,image,position)
-            question.possibleAnswers=answerService.getAnswersByQuestionID(id)
+            question = Question(question_id,title,text,image,position)
+            question.possibleAnswers=answerService.getAnswersByQuestionID(question_id)
             return serialize(question), 200
         else:
             return '',404
@@ -180,17 +182,23 @@ def getQuestionByID(id):
         cursor.execute('rollback')
         raise err
 
-def updateQuestionByID(id, question: json):
+def updateQuestionByPosition(position, question: json):
     newQuestion = deserialize(question)
+    if((getQuestionIDByPosition(position)[1])==404):
+        return '',404
+    question_id=getQuestionIDByPosition(position)[0]
+    answerService.deleteAnswerByQuestionID(question_id)
     db = connectDB()
     cursor = db.cursor()
     cursor.execute("begin")
-    request = f'UPDATE QUESTION SET TEXT="{newQuestion.text}", TITLE="{newQuestion.title}", IMAGE="{newQuestion.image}", POSITION="{newQuestion.position}" WHERE ID ="{id}";'
+    request = f'UPDATE QUESTION SET TEXT="{newQuestion.text}", TITLE="{newQuestion.title}", IMAGE="{newQuestion.image}", POSITION={newQuestion.position} WHERE POSITION ={position};'
+    print(request)
     try:
         cursor.execute(request)
-        if(checkIfQuestionExistsByID(id)):
+        cursor.execute('commit')
+        if(checkIfQuestionExistsByPosition(newQuestion.position)):
             for answer in newQuestion.possibleAnswers:
-                answer.questionID = id
+                answer.questionID = question_id
                 aRequest = answerService.insertAnswerRequest(answer)
                 cursor.execute(aRequest)
             return {'status':'OK'}, 200
@@ -213,8 +221,26 @@ def checkQuestionPosition(question: json):
         createQuestion(newQuestion)
         return {'status':'OK'}, 200
 
-def checkIfQuestionExistsByID(id):
-    if(getQuestionByID(id)[1]==404):
+def checkIfQuestionExistsByPosition(position):
+    if(getQuestionByPosition(position)[1]==404):
         return False
     else:
         return True
+
+def getQuestionIDByPosition(position):
+    db = connectDB()
+    cursor = db.cursor()
+    cursor.execute("begin")
+    request=f'SELECT ID FROM QUESTION WHERE POSITION="{position}";'
+    try:
+        cursor.execute(request)
+        row = cursor.fetchone()
+        if(row is not None):
+            question_id = row[0]
+            return question_id, 200
+        else:
+            return '',404
+    except Exception as err:
+        #in case of exception, roolback the transaction
+        cursor.execute('rollback')
+        raise err
