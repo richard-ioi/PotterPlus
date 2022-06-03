@@ -106,6 +106,7 @@ def deleteQuestionByPosition(position):
     request = f'DELETE FROM QUESTION WHERE POSITION ="{position}";'
     try:
         cursor.execute(request)
+        cursor.execute('commit')
         if(checkIfQuestionExistsByPosition(position)):
             return {'status':'OK'}, 204
         else:
