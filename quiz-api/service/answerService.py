@@ -19,9 +19,9 @@ def deleteAnswerByQuestionID(questionID):
         cursor.execute('commit')
         return {'status':'OK'}, 204
     except Exception as err:
-            #in case of exception, roolback the transaction
-            cursor.execute('rollback')
-            raise err
+        #in case of exception, roolback the transaction
+        cursor.execute('rollback')
+        raise err
 
 
 def getAnswersByQuestionID(questionID):

@@ -3,8 +3,9 @@ from flask import Flask, request
 from importlib_metadata import method_cache
 from utils.jwt_utils import build_token
 from utils.jwt_utils import decode_token
-import service.questionServices as questionServices
+import service.questionService as questionService
 import service.participationService as participationService
+import service.quizInfoService as quizInfoService
 from model.participation import serialize
 
 
@@ -17,7 +18,8 @@ def hello_world():
 
 @app.route('/quiz-info', methods=['GET'])
 def GetQuizInfo():
-	return {"size": 0, "scores": []}, 200
+	#return {"size": 0, "scores": []}, 200
+	return quizInfoService.getQuizInfo()
 
 @app.route('/login', methods=['POST'])
 def SendUserLogin():
@@ -33,7 +35,7 @@ def PostQuestion():
 	try:
 		if (decode_token((request.headers.get('Authorization'))[7:])=='quiz-app-admin'):
 			question = request.get_json()
-			return questionServices.checkQuestionPosition(question)
+			return questionService.checkQuestionPosition(question)
 		else:
 			return '',401
 	except Exception:
@@ -42,18 +44,18 @@ def PostQuestion():
 
 @app.route('/questions/<question_position>', methods=['GET'])
 def GetQuestion(question_position):
-	return questionServices.getQuestionByPosition(question_position)
+	return questionService.getQuestionByPosition(question_position)
 
 @app.route('/questions/<question_position>', methods=['PUT'])
 def UpdateQuestion(question_position):
 	newQuestion = request.get_json()
-	return questionServices.updateQuestionByPosition(question_position,newQuestion)
+	return questionService.updateQuestionByPosition(question_position,newQuestion)
 
 @app.route('/questions/<question_position>', methods=['DELETE'])
 def DeleteQuestion(question_position):
 	try:
 		if (decode_token((request.headers.get('Authorization'))[7:])=='quiz-app-admin'):
-			return questionServices.deleteQuestionByPosition(question_position)
+			return questionService.deleteQuestionByPosition(question_position)
 		else:
 			return '',401
 	except Exception:
@@ -64,11 +66,14 @@ def SaveParticipation():
 	try:
 		participationParameters = request.get_json()
 		participation = participationService.createParticipation(participationParameters)
-		#QuizInfoServices.insertScore(participation)
+		quizInfoService.insertScore(participation)
 		return serialize(participation),200
 	except Exception:
 		return '',400
-		
 
+@app.route('/participations', methods=['DELETE'])
+def DeleteParticipation():
+	return quizInfoService.deleteAllQuizInfo()
+		
 if __name__ == "__main__":
 	app.run(ssl_context='adhoc')
