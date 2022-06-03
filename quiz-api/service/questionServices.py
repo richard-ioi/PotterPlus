@@ -244,3 +244,10 @@ def getQuestionIDByPosition(position):
         #in case of exception, roolback the transaction
         cursor.execute('rollback')
         raise err
+
+def getCorrectAnswerPosition(Question):
+    i=0
+    for answer in Question.possibleAnswers:
+        if(answer.isCorrect==1):
+            return i
+        i+=1

@@ -4,6 +4,7 @@ from importlib_metadata import method_cache
 from utils.jwt_utils import build_token
 from utils.jwt_utils import decode_token
 import service.questionServices as questionServices
+import service.participationService as participationService
 
 app = Flask(__name__)
 
@@ -55,6 +56,11 @@ def DeleteQuestion(question_position):
 			return '',401
 	except Exception:
 		return '',401
+
+@app.route('/participations', methods=['POST'])
+def SaveParticipation():
+	participationParameters = request.get_json()
+	return participationService.saveParticipation(participationParameters)
     	
 
 if __name__ == "__main__":
