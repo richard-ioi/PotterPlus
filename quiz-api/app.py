@@ -1,3 +1,4 @@
+import json
 from flask import Flask, request
 from importlib_metadata import method_cache
 
@@ -5,6 +6,7 @@ from utils.jwt_utils import build_token
 from utils.jwt_utils import decode_token
 import service.questionServices as questionServices
 import service.participationService as participationService
+
 
 app = Flask(__name__)
 
@@ -60,7 +62,9 @@ def DeleteQuestion(question_position):
 @app.route('/participations', methods=['POST'])
 def SaveParticipation():
 	participationParameters = request.get_json()
-	return participationService.saveParticipation(participationParameters)
+	participation = participationService.createParticipation(participationParameters)
+	#QuizInfoServices.insertScore(participation)
+	return json.dumps(participation),200
     	
 
 if __name__ == "__main__":

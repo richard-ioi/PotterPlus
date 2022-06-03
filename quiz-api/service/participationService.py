@@ -1,7 +1,7 @@
 import json
 from model.participation import Participation
-from model.
-from service.questionServices import QuestionServices
+from model.answerSummary import AnswerSummary
+import service.questionServices as QuestionServices
 from utils.dbUtils import connectDB
 
 def insertInfoRequest(participation: Participation):
@@ -18,8 +18,20 @@ def getQuizInfo():
     c.execute("SELECT * FROM INFO ORDER BY SCORE")
     c.fetchall()
 
-def saveParticipation(participationParameters: json):
-    playerName = participationParameters["player_name"]
+def insertScore(participation):
+    db = connectDB()
+    cursor = db.cursor()
+    cursor.execute("begin")
+    try:
+        cursor.execute(insertInfoRequest(participation))
+        cursor.execute('commit')
+    except Exception as err:
+        #in case of exception, roolback the transaction
+        cursor.execute('rollback')
+        raise err
+
+def createParticipation(participationParameters: json):
+    playerName = participationParameters["playerName"]
     answers = participationParameters["answers"]
     i=0
     score=0
@@ -33,14 +45,4 @@ def saveParticipation(participationParameters: json):
         answerSummaries.append(AnswerSummary(correctAnswerPosition,wasCorrect))
     participation = Participation(playerName,score)
     participation.set_AnswerSummaries(answerSummaries)
-    db = connectDB()
-    cursor = db.cursor()
-    cursor.execute("begin")
-    try:
-        cursor.execute(insertInfoRequest(participation))
-        cursor.execute('commit')
-        return serialize(participation),200
-    except Exception as err:
-        #in case of exception, roolback the transaction
-        cursor.execute('rollback')
-        raise err
+    return participation
