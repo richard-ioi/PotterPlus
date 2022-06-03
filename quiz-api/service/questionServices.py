@@ -5,56 +5,6 @@ from model.question import Question
 from model.answer import Answer
 import service.answerService as answerService
 
-
-def IsQuestionValid(question):
-    if not question['text'] or not question['title'] or not question['position']:
-        return False
-    return True
-
-
-def serialize(question: Question):
-    data = {
-        "text":question.text,
-        "title":question.title,
-        "image":question.image,
-        "position":int(question.position),
-        "possibleAnswers":[]
-    }
-    for answer in question.possibleAnswers:
-        isCorrect=True
-        if(answer.isCorrect==0):
-            isCorrect=False
-        answerData = {
-            "id":answer.id,
-            "questionID":answer.questionID,
-            "text":answer.text,
-            "isCorrect":isCorrect
-        }
-        data["possibleAnswers"].append(answerData)
-
-    return json.dumps(data)
-    
-
-
-def deserialize(dbJson: json):  
-    title = dbJson["title"]
-    text = dbJson["text"]
-    image = dbJson["image"]
-    position = dbJson["position"]
-    print("Position", position)
-    if "id" in dbJson:
-        id = dbJson["id"]
-        question = Question(id, title, text, image, position)
-    else:
-        question = Question(-1, title, text, image, position)
-        
-    answers = []
-    for answer in dbJson["possibleAnswers"]:
-        answers.append(answerService.deserialize(question.id, answer))
-    question.set_possibleAnswers(answers)
-
-    return question
-
 def insertQuestionRequest(question: Question):
     if question.id != -1:
         request =  f'INSERT INTO QUESTION(ID, TEXT, TITLE, IMAGE, POSITION) VALUES ("{question.id}","{question.text}", "{question.title}", "{question.image}", {question.position});'
@@ -66,19 +16,26 @@ def insertQuestionRequest(question: Question):
 #Get all questions.
 def getAllQuestions():
     db = connectDB()
-    c = db.cursor()
-    c.execute("SELECT json_group_array( json_object('ID', id, 'TEXT', text,'TITLE', title, 'IMAGE', image, 'POSITION', position)) FROM QUESTION;")
-    questionsList = c.fetchall()
-    print("QUESTIONLIST", questionsList)
-    db.close()
+    cursor = db.cursor()
     questions = []
-    for question in questionsList:
-        print(question)
-        # question = json.dumps(question)
-        # print("question in for", json.loads(question))
-        # questions.append(deserialize(json.loads(question)))
-    print("DESERIALIZED QUESTIONS", questions)
-    return questionsList
+    cursor.execute("begin")
+    try:
+        cursor.execute("SELECT * FROM QUESTION ORDER BY POSITION;")
+        for row in cursor.fetchall():
+            question_id = row[0]
+            text = row[1]
+            title = row[2]
+            image = row[3]
+            position = row[4]
+            question = Question(question_id,title,text,image,position)
+            question.possibleAnswers=answerService.getAnswersByQuestionID(question_id)
+            questions.append(question)
+        return questions
+    except Exception as err:
+        #in case of exception, roolback the transaction
+        cursor.execute('rollback')
+        raise err
+    
 
 #Count all questions.
 def questionCount():
@@ -174,7 +131,7 @@ def getQuestionByPosition(position):
 
             question = Question(question_id,title,text,image,position)
             question.possibleAnswers=answerService.getAnswersByQuestionID(question_id)
-            return serialize(question), 200
+            return Question.serialize(question), 200
         else:
             return '',404
     except Exception as err:
@@ -183,7 +140,7 @@ def getQuestionByPosition(position):
         raise err
 
 def updateQuestionByPosition(position, question: json):
-    newQuestion = deserialize(question)
+    newQuestion = Question.deserialize(question)
     if((getQuestionIDByPosition(position)[1])==404):
         return '',404
     question_id=getQuestionIDByPosition(position)[0]
@@ -210,7 +167,7 @@ def updateQuestionByPosition(position, question: json):
         raise err
         
 def checkQuestionPosition(question: json):
-    newQuestion = deserialize(question)
+    newQuestion = Question.deserialize(question)
     if(newQuestion.position > questionCount()+1 or newQuestion.position < 0):
         return {"status":"KO"}, 400
     if isPositonTaken(newQuestion.position):
@@ -244,10 +201,3 @@ def getQuestionIDByPosition(position):
         #in case of exception, roolback the transaction
         cursor.execute('rollback')
         raise err
-
-def getCorrectAnswerPosition(Question):
-    i=0
-    for answer in Question.possibleAnswers:
-        if(answer.isCorrect==1):
-            return i
-        i+=1

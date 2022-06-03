@@ -1,6 +1,7 @@
 import json
 from model.participation import Participation
 from model.answerSummary import AnswerSummary
+from model.question import Question
 import service.questionServices as QuestionServices
 from utils.dbUtils import connectDB
 
@@ -37,7 +38,7 @@ def createParticipation(participationParameters: json):
     score=0
     answerSummaries = []
     for question in QuestionServices.getAllQuestions():
-        correctAnswerPosition=QuestionServices.getCorrectAnswerPosition(question)
+        correctAnswerPosition=Question.getCorrectAnswerPosition(question)
         wasCorrect=False
         if(answers[i]==correctAnswerPosition):
             wasCorrect=True
