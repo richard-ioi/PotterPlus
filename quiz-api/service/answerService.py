@@ -1,20 +1,5 @@
-import json
 from model.answer import Answer
 from utils.dbUtils import connectDB
-
-def serialize(answer: Answer):
-    print(json.dumps(answer.__dict__))
-    return json.dumps(answer.__dict__)
-
-def deserialize(answerID: int, answer: json):
-    text = answer["text"]
-    isCorrect = answer["isCorrect"]
-
-    if "id" in answer:
-        id = answer["id"]
-        return Answer(id, answerID, text, isCorrect)
-    else:
-        return Answer(-1, answerID, text, isCorrect)
 
 def insertAnswerRequest(answer: Answer):
     if answer.id != -1:
@@ -34,9 +19,9 @@ def deleteAnswerByQuestionID(questionID):
         cursor.execute('commit')
         return {'status':'OK'}, 204
     except Exception as err:
-            #in case of exception, roolback the transaction
-            cursor.execute('rollback')
-            raise err
+        #in case of exception, roolback the transaction
+        cursor.execute('rollback')
+        raise err
 
 
 def getAnswersByQuestionID(questionID):
