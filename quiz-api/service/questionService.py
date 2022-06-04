@@ -138,7 +138,22 @@ def getQuestionByPosition(position):
         cursor.execute('rollback')
         raise err
 
-def updateQuestionByPosition(position, question: json):
+#Updates the value of the existing question positions if a question is added.
+def updateQuestionPositionsIncrease(minPosition, maxPosition):
+    db = connectDB()
+    db.cursor().execute(f'UPDATE QUESTION SET position = position+1 WHERE position >= {minPosition} AND position <= {maxPosition};')
+    db.cursor().execute("commit")
+    db.close()
+
+#Updates the value of the existing question positions if a question is added.
+def updateQuestionPositionsDecrease(minPosition, maxPosition):
+    db = connectDB()
+    db.cursor().execute(f'UPDATE QUESTION SET position = position-1 WHERE position >= {minPosition} AND position <= {maxPosition};')
+    db.cursor().execute("commit")
+    db.close()
+
+
+def updateQuestionByPosition(position: int, question: json):
     newQuestion = Question.deserialize(question)
     if((getQuestionIDByPosition(position)[1])==404):
         return '',404
@@ -153,9 +168,14 @@ def updateQuestionByPosition(position, question: json):
     try:
         cursor.execute(request)
         if(position!=newQuestion.position):
-            i=1
-            #update la position ici
-            #cursor.execute(LA REQUETE)
+            minimum = min(int(position), int(newQuestion.position))
+            maximum = max(int(position), int(newQuestion.position))
+            #update questions if new position is < questionNumber
+            if(newQuestion.position != questionNumber):
+                cursor.execute(f'UPDATE QUESTION SET position = position+1 WHERE position >= {minimum} AND position <= {maximum} AND TITLE!="{newQuestion.title}";')
+            if(newQuestion.position == questionNumber):
+                cursor.execute(f'UPDATE QUESTION SET position = position-1 WHERE position >= {minimum} AND position <= {maximum} AND TITLE !="{newQuestion.title}";')
+                print("heeee")
         for answer in newQuestion.possibleAnswers:
             answer.questionID = question_id
             aRequest = answerService.insertAnswerRequest(answer)
