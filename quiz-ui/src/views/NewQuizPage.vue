@@ -10,8 +10,7 @@
 </template>
 
 <script>
-import quizApiService from "@/services/QuizApiService";
-
+import participationStorageService from "../services/ParticipationStorageService";
 export default {
   name: "NewQuizPage",
   data() {
@@ -25,6 +24,8 @@ export default {
   methods: {
     launchNewQuiz() {
       console.log("Launch new quiz with", this.username);
+      participationStorageService.savePlayerName(this.username);
+      this.$router.push('/questions');
     },
   }
 };

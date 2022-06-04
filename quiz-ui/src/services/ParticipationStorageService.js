@@ -1,17 +1,22 @@
+import quizApiService from "@/services/QuizApiService";
+
 export default {
   clear() {
-    // todo : implement
+    return quizApiService.call("delete", "participations")
   },
   savePlayerName(playerName) {
     window.localStorage.setItem("playerName", playerName);
+    //return quizApiService.call("post", "participations", )
   },
   getPlayerName() {
-    // todo : implement
+    return quizApiService.call("get", "participations")
   },
   saveParticipationScore(participationScore) {
-    // todo : implement
+    window.localStorage.setItem("score", participationScore)
+    //return quizApiService.call("post", "participations", participationScore)
   },
   getParticipationScore() {
-    // todo : implement
+    console.log(quizApiService.getQuizInfo().score)
+    return quizApiService.getQuizInfo().score
   }
 };
