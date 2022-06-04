@@ -17,10 +17,12 @@ def deleteAnswerByQuestionID(questionID):
     try:
         cursor.execute(request)
         cursor.execute('commit')
+        db.close()
         return {'status':'OK'}, 204
     except Exception as err:
         #in case of exception, roolback the transaction
         cursor.execute('rollback')
+        db.close()
         raise err
 
 
@@ -38,9 +40,10 @@ def getAnswersByQuestionID(questionID):
             text = row[2]
             isCorrect = row[3]
             answers.append(Answer(id,questionID,text,isCorrect))
-            
+        db.close()
         return answers
     except Exception as err:
         #in case of exception, roolback the transaction
         cursor.execute('rollback')
+        db.close()
         raise err
