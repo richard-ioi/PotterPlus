@@ -1,8 +1,6 @@
 # Exemple de création de classe en python
 import json
-from typing import List
 from model.answer import Answer
-
 
 class Question():
 	def __init__(self, id:int, title: str, text: str, image: str, position: int):
@@ -44,8 +42,6 @@ class Question():
 
 		return json.dumps(data)
 		
-
-
 	def deserialize(dbJson: json):  
 		title = dbJson["title"]
 		text = dbJson["text"]

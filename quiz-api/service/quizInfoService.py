@@ -16,7 +16,6 @@ def getQuizInfo():
     try:
         cursor.execute("SELECT * FROM INFO ORDER BY SCORE DESC")
         scores=[]
-        #if(cursor.fetchone() is not None):
         for row in cursor.fetchall(): 
             playerName=row[0]
             score=row[1]
@@ -24,12 +23,12 @@ def getQuizInfo():
             scores.append(ParticipationResult(playerName,score,date))
         quizInfo = QuizInfo(size)
         quizInfo.set_Scores(scores)
+        db.close()
         return QuizInfo.serialize(quizInfo),200
-        #else:
-        #    return {"size": size, "scores": []}, 200
     except Exception as err:
         #in case of exception, roolback the transaction
         cursor.execute('rollback')
+        db.close()
         raise err
 
 def deleteAllQuizInfo():
@@ -39,10 +38,12 @@ def deleteAllQuizInfo():
     try:
         cursor.execute("DELETE FROM INFO")
         cursor.execute('commit')
+        db.close()
         return '',204
     except Exception as err:
         #in case of exception, roolback the transaction
         cursor.execute('rollback')
+        db.close()
         raise err
 
 
@@ -53,7 +54,9 @@ def insertScore(participation):
     try:
         cursor.execute(insertInfoRequest(participation))
         cursor.execute('commit')
+        db.close()
     except Exception as err:
         #in case of exception, roolback the transaction
         cursor.execute('rollback')
+        db.close()
         raise err

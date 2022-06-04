@@ -33,7 +33,6 @@ def getAllQuestions():
         #in case of exception, roolback the transaction
         cursor.execute('rollback')
         raise err
-    
 
 #Count all questions.
 def questionCount():
@@ -80,19 +79,20 @@ def createQuestion(newQuestion: Question):
         # save the question to db
         cursor.execute(request)
         id = cursor.lastrowid
-        #Answer Request. TODO : refacto
+        #Answer Request.
         for answer in newQuestion.possibleAnswers:
             answer.questionID = id
             aRequest = answerService.insertAnswerRequest(answer)
             cursor.execute(aRequest)
-
         #send the request
         cursor.execute("commit")
         print("Records created successfully")
+        db.close()
         return {'status':'OK'}, 200
     except Exception as err:
         #in case of exception, rollback the transaction
         cursor.execute('rollback')
+        db.close()
         raise err
 
 def deleteQuestionByPosition(position):
@@ -108,10 +108,12 @@ def deleteQuestionByPosition(position):
         cursor.execute(request)
         cursor.execute("UPDATE QUESTION SET position = position-1 WHERE position >= ?;",[position])
         cursor.execute('commit')
+        db.close()
         return {'status':'OK'}, 204
     except Exception as err:
             #in case of exception, roolback the transaction
             cursor.execute('rollback')
+            db.close()
             raise err
             
 def getQuestionByPosition(position):
@@ -175,17 +177,18 @@ def updateQuestionByPosition(position: int, question: json):
                 cursor.execute(f'UPDATE QUESTION SET position = position+1 WHERE position >= {minimum} AND position <= {maximum} AND TITLE!="{newQuestion.title}";')
             if(newQuestion.position == questionNumber):
                 cursor.execute(f'UPDATE QUESTION SET position = position-1 WHERE position >= {minimum} AND position <= {maximum} AND TITLE !="{newQuestion.title}";')
-                print("heeee")
         for answer in newQuestion.possibleAnswers:
             answer.questionID = question_id
             aRequest = answerService.insertAnswerRequest(answer)
             cursor.execute(aRequest)
         
         cursor.execute('commit')
+        db.close()
         return {'status':'OK'}, 200
     except Exception as err:
         #in case of exception, roolback the transaction
         cursor.execute('rollback')
+        db.close()
         raise err
         
 def checkQuestionPosition(question: json):
@@ -199,7 +202,6 @@ def checkQuestionPosition(question: json):
     else:
         createQuestion(newQuestion)
         return {'status':'OK'}, 200
-
 
 
 def checkIfQuestionExistsByPosition(position):
@@ -216,6 +218,7 @@ def getQuestionIDByPosition(position):
     try:
         cursor.execute(request)
         row = cursor.fetchone()
+        db.close()
         if(row is not None):
             question_id = row[0]
             return question_id, 200
@@ -224,4 +227,5 @@ def getQuestionIDByPosition(position):
     except Exception as err:
         #in case of exception, roolback the transaction
         cursor.execute('rollback')
+        db.close()
         raise err
