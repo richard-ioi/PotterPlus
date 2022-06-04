@@ -20,6 +20,11 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue')
     },
     {
+      path: '/start-new-quiz-page',
+      name: 'quiz',
+      component: () => import('../views/NewQuizPage.vue')
+    },
+    {
       path: '/questions',
       name: 'question',
       // route level code-splitting
@@ -27,6 +32,7 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: QuestionManager
     },
+    
   ]
 })
 
