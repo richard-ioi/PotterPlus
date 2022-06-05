@@ -32,5 +32,10 @@ export default {
   },
   getQuestion(position) {
     return this.call("get", "questions/" + position)
-  }
+  },
+  saveParticipation(username, answerList) {
+    return this.call("post", "/participations", { playerName: username, answers: answerList })
+  },
+
+
 };
