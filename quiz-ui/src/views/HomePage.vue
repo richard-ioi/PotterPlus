@@ -4,24 +4,32 @@
   </head>
 
   <body>
-    <router-link to="/start-new-quiz-page" id=startBtn type="button" class="btn btn-primary">Démarrer le quiz !
-    </router-link>
-    <table id=bestScores class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Prénom</th>
-          <th scope="col">Score</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(scoreEntry, index) in this.registeredScores" v-bind:key="scoreEntry.date">
-          <th scope="row">{{ index + 1 }}</th>
-          <td>{{ scoreEntry.playerName }}</td>
-          <td>{{ scoreEntry.score }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="container">
+      <div class="center">
+        <router-link to="/start-new-quiz-page" id=startBtn type="button" class="btn btn-outline-light" >Start the quiz !</router-link>
+      </div>
+    </div>
+    
+    <div class="container">
+      <h3>All player's scores</h3>
+      <table id=bestScores class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(scoreEntry, index) in this.registeredScores" v-bind:key="scoreEntry.date">
+            <th scope="row">{{ index + 1 }}</th>
+            <td>{{ scoreEntry.playerName }}</td>
+            <td>{{ scoreEntry.score }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
   </body>
 
 </template>
