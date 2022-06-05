@@ -5,12 +5,12 @@
     <div class="wrapper2">
       <div class="one">
         <br>
-        <h2>Are you ready to take a new Harry Potter Quiz ? </h2>
+        <h2>Are you ready to take a new Quiz ? </h2>
         <br>
         <p>But first, enter your name :</p>
         <input v-model="username" type="text" name="name" size="10">
         <p>{{ username }}</p>
-        <btn class = "btn btn-outline-light" @click="launchNewQuiz"  style="text-align:center">GO!</btn>
+        <btn class="btn-sample badge" @click="launchNewQuiz"  style="text-align:center">Start</btn>
       </div>
     </div>
     </body>

@@ -8,7 +8,13 @@ import { RouterLink, RouterView } from 'vue-router'
     <div class="wrapper">
       <nav>
         <RouterLink to="/">HOME</RouterLink>
-        <RouterLink to="/quiz">QUIZ</RouterLink>
+        <div class="dropdown">
+          <a class="dropbtn">QUIZ</a>
+          <div class="dropdown-content">
+            <RouterLink to="questions">House</RouterLink>
+            <RouterLink to="questions" class = "disabledlink" >Patronus</RouterLink>
+          </div>
+        </div>
         <RouterLink to="/about">ABOUT US</RouterLink>
       </nav>
     </div>
