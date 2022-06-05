@@ -99,6 +99,7 @@ nav {
   text-align: center;
   margin-top: 2rem;
   background: linear-gradient(rgba(52, 4, 224, 0.349), rgb(73, 15, 95));
+  border-radius: 15px;
   
 }
 
@@ -126,9 +127,17 @@ nav a:first-of-type {
 h1 {
   font-family: calibri;
   text-align: center;
+  color:rgba(255, 255, 255, 0.801)
+  
 }
 h2 {
+  text-align: center;
   font-family: calibri;
+  color: #ffffffaf;
+}
+h3 {
+  font-family: calibri;
+  color: #ffffffaf;
 }
 
 ul {
@@ -167,6 +176,7 @@ td {
 
 p {
   font-size: 19px;
+  color: #ffffffaf;
 }
 
 body {
@@ -220,4 +230,57 @@ body {
   margin:0 auto;
     display:block;
     text-align:center
+}
+
+.btn-sample { 
+  color: #ffffff; 
+  background-color: #49247A; 
+  font-family: calibri;
+  font-size: 22px;
+  font-weight:normal;
+  border-radius: 7px;
+} 
+ 
+.btn-sample:hover, 
+.btn-sample:focus, 
+.btn-sample:active, 
+.btn-sample.active, 
+.open .dropdown-toggle.btn-sample { 
+  color: #ffffff; 
+  background-color: #391666; 
+  border-color: #130269; 
+} 
+ 
+.btn-sample:active, 
+.btn-sample.active, 
+.open .dropdown-toggle.btn-sample { 
+  background-image: none; 
+} 
+ 
+.btn-sample.disabled, 
+.btn-sample[disabled], 
+fieldset[disabled] .btn-sample, 
+.btn-sample.disabled:hover, 
+.btn-sample[disabled]:hover, 
+fieldset[disabled] .btn-sample:hover, 
+.btn-sample.disabled:focus, 
+.btn-sample[disabled]:focus, 
+fieldset[disabled] .btn-sample:focus, 
+.btn-sample.disabled:active, 
+.btn-sample[disabled]:active, 
+fieldset[disabled] .btn-sample:active, 
+.btn-sample.disabled.active, 
+.btn-sample[disabled].active, 
+fieldset[disabled] .btn-sample.active { 
+  background-color: #821091; 
+  border-color: #130269; 
+} 
+ 
+.btn-sample .badge { 
+  color: #821091; 
+  background-color: #ffffff; 
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+  background-color: #49247a6b;
 }

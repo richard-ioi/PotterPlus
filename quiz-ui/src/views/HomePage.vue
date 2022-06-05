@@ -6,13 +6,13 @@
   <body>
     <div class="container">
       <div class="center">
-        <router-link to="/start-new-quiz-page" id=startBtn type="button" class="btn btn-outline-light" >Start the quiz !</router-link>
+        <router-link to="/start-new-quiz-page" id=startBtn type="button" class="btn-sample badge" >Start the quiz !</router-link>
       </div>
     </div>
     
     <div class="container">
       <h3>All player's scores</h3>
-      <table id=bestScores class="table table-striped">
+      <table id=bestScores class="table table-hover">
         <thead>
           <tr>
             <th scope="col">#</th>
