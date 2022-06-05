@@ -59,10 +59,50 @@
   font-weight: normal;
 }
 
+h1 {
+  font-family: futara;
+  text-align: center;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+li {
+  float: left;
+  text-align: center;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+li a:hover {
+  background-color: #111;
+}
+
+th {
+  color: white;
+}
+
+td {
+  color: white;
+}
+
 body {
   min-height: 100vh;
   color: var(--color-text);
   background: var(--color-background);
+  background-image: url('background_image.svg');
   transition: color 0.5s, background-color 0.5s;
   line-height: 1.6;
   font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
