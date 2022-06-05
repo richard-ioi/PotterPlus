@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import QuestionManager from '../components/QuestionManager.vue'
 import HomePage from '../views/HomePage.vue'
 
 const router = createRouter({
@@ -21,7 +22,21 @@ const router = createRouter({
       path: '/start-new-quiz-page',
       name: 'quiz',
       component: () => import('../views/NewQuizPage.vue')
+    },
+    {
+      path: '/questions',
+      name: 'question',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: QuestionManager
+    },
+    {
+      path: '/score',
+      name: 'score',
+      component: () => import('../views/ScorePage.vue')
     }
+
   ]
 })
 

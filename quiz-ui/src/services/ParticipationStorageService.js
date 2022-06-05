@@ -1,4 +1,4 @@
-import quizApiService from "@/services/QuizApiService";
+import QuizApiService from '../services/QuizApiService.js';
 
 export default {
   clear() {
@@ -13,10 +13,12 @@ export default {
   },
   saveParticipationScore(participationScore) {
     window.localStorage.setItem("score", participationScore)
-    //return quizApiService.call("post", "participations", participationScore)
   },
+
+  //TODO : false 
   getParticipationScore() {
     console.log(quizApiService.getQuizInfo().score)
     return quizApiService.getQuizInfo().score
-  }
+  },
+
 };
