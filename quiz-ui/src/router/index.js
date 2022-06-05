@@ -31,6 +31,11 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: QuestionManager
     },
+    {
+      path: '/score',
+      name: 'score',
+      component: () => import('../views/ScorePage.vue')
+    }
 
   ]
 })
