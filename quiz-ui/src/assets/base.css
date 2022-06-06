@@ -313,12 +313,10 @@ fieldset[disabled] .btn-sample.active {
 }
 
 .scoreDisplay{
-  border-width:3px;
   margin-left: 450px;
   margin-right: 450px;
   padding-top: 10px;
   padding-bottom: 10px;
-  border-style:solid;
 }
 
 .disabledlink {

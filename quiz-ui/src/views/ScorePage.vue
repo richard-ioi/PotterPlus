@@ -2,7 +2,11 @@
 <br>
   <h2>Your score :</h2> 
   <h2 v-if="score" >{{ score }}/10 </h2>
+  <div class="one">
+    <div width="500" height="400" ref="imgHouse" ></div> 
+  </div> 
   <div ref="scoreDisplay" class="scoreDisplay">
+    <img v-if="imgSrc" :src="imgSrc" style="object-fit: cover;display: block;  margin-left: auto;  margin-right: auto;  width: 50%;"/>
     <h2 ref="housing" ></h2>
   </div>
   <br>
@@ -40,7 +44,8 @@ export default {
       playerName: '',
       score: 0,
       registeredScores: [],
-      playerPosition: 0
+      playerPosition: 0,
+      imgSrc: ''
     };
   },
   async created() {
@@ -54,22 +59,23 @@ export default {
     console.log("Composant ScorePage 'created'");
     console.log("Registered Scores: ", this.registeredScores);
 
-
+    const houseTxt = this.$refs.housing;
+    
     if (0 <= this.score <= 2) {
-      this.$refs.housing.innerHTML = "You're in Slytherin !";
-      this.$refs.scoreDisplay.style.background = "#16680ba8";
+      houseTxt.innerHTML = "You're in Slytherin !";
+      this.imgSrc ='https://upload.wikimedia.org/wikipedia/commons/3/34/Slytherin.png';
     }
     else if (3 <= this.score <= 5) {
-      this.housing.innerHTML = "You're in Hufflepuff !";
-      this.$refs.scoreDisplay.style.background = "#b8a927a8";
+      houseTxt.innerHTML = "You're in Hufflepuff !";
+      this.imgSrc = 'https://www.nicepng.com/png/full/43-439104_hufflepuff-crest-harry-potter-banner-harry-potter-hufflepuff.png';
     }
     else if (6 <= this.score <= 8) {
-      this.$refs.housing.innerHTML = "You're in Gryffindor !";
-      this.$refs.scoreDisplay.style.background = "#af2b26a8";
+      houseTxt.innerHTML = "You're in Gryffindor !";
+      this.imgSrc = 'https://logolook.net/wp-content/uploads/2021/12/Gryffindor-Logo.png';
     }
     else if (9 <= this.score <= 10) {
-      this.$refs.housing.innerHTML = "You're in Ravenclaw !";
-      this.$refs.scoreDisplay.style.background = "#233897a8";
+      houseTxt.innerHTML = "You're in Ravenclaw !";
+      this.imgSrc = 'https://www.pngmart.com/files/12/Ravenclaw-House-PNG-Clipart.png';
     } 
   }
 };
