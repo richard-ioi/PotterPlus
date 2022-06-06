@@ -1,5 +1,7 @@
 <template>
+  <br>
   <h1>Question {{ currentPosition }} / {{ totalNumberOfQuestion }}</h1>
+  <br>
   <QuestionDisplay :question="currentQuestion" v-if="currentQuestion" @answer-selected="answerClickedHandler" />
 </template>
 <script>

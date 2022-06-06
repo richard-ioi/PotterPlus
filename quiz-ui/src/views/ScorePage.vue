@@ -1,11 +1,19 @@
 <template>
-  <div>SCORES</div>
-  <p v-if="score">{{ score }} </p><br>
-  <router-link to="/" id=startBtn type="button" class="btn btn-outline-light">Retour à l'écran d'accueil principal !
-  </router-link><br>
+<br>
+  <h2>Your score :</h2> 
+  <h2 v-if="score" >{{ score }}/10 </h2>
+  <div ref="scoreDisplay" class="scoreDisplay">
+    <h2 ref="housing" ></h2>
+  </div>
+  <br>
+  <router-link to="/" id=startBtn type="button" class="btn btn-outline-light" style="display:inline;  position: relative; float:right;">
+    Retour à l'écran d'accueil principal !
+  </router-link><br><br>
+  <p style="display:inline">You can check yours and others players' ranking</p>
+  
+  
   <div class="container">
-    <h3>All player's scores</h3>
-    <table id=bestScores class="table table-striped">
+    <table id=bestScores class="table table-hover">
       <thead>
         <tr>
           <th scope="col">#</th>
@@ -45,6 +53,24 @@ export default {
     this.registeredScores = quizInfoApiResult.data.scores;
     console.log("Composant ScorePage 'created'");
     console.log("Registered Scores: ", this.registeredScores);
+
+
+    if (0 <= this.score <= 2) {
+      this.$refs.housing.innerHTML = "You're in Slytherin !";
+      this.$refs.scoreDisplay.style.background = "#16680ba8";
+    }
+    else if (3 <= this.score <= 5) {
+      this.housing.innerHTML = "You're in Hufflepuff !";
+      this.$refs.scoreDisplay.style.background = "#b8a927a8";
+    }
+    else if (6 <= this.score <= 8) {
+      this.$refs.housing.innerHTML = "You're in Gryffindor !";
+      this.$refs.scoreDisplay.style.background = "#af2b26a8";
+    }
+    else if (9 <= this.score <= 10) {
+      this.$refs.housing.innerHTML = "You're in Ravenclaw !";
+      this.$refs.scoreDisplay.style.background = "#233897a8";
+    } 
   }
 };
 </script>

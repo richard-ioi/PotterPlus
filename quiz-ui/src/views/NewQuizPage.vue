@@ -9,7 +9,8 @@
         <br>
         <p>But first, enter your name :</p>
         <input v-model="username" type="text" name="name" size="10">
-        <p>{{ username }}</p>
+        <br>
+        <br>
         <btn class="btn-sample badge" @click="launchNewQuiz"  style="text-align:center">Start</btn>
       </div>
     </div>

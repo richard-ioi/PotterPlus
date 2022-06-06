@@ -11,7 +11,7 @@
     </div>
     
     <div class="container">
-      <h3>All player's scores</h3>
+      <h3>All players' scores</h3>
       <table id=bestScores class="table table-hover">
         <thead>
           <tr>
