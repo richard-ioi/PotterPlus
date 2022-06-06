@@ -63,19 +63,19 @@ export default {
     
     if (0 <= this.score <= 2) {
       houseTxt.innerHTML = "You're in Slytherin !";
-      this.imgSrc ='https://upload.wikimedia.org/wikipedia/commons/3/34/Slytherin.png';
+      this.imgSrc ='https://perso.esiee.fr/~fouquoir/E4/HarryPotterQuiz/Serpentard.png';
     }
     else if (3 <= this.score <= 5) {
       houseTxt.innerHTML = "You're in Hufflepuff !";
-      this.imgSrc = 'https://www.nicepng.com/png/full/43-439104_hufflepuff-crest-harry-potter-banner-harry-potter-hufflepuff.png';
+      this.imgSrc = 'https://perso.esiee.fr/~fouquoir/E4/HarryPotterQuiz/Poufsouffle.png';
     }
     else if (6 <= this.score <= 8) {
       houseTxt.innerHTML = "You're in Gryffindor !";
-      this.imgSrc = 'https://logolook.net/wp-content/uploads/2021/12/Gryffindor-Logo.png';
+      this.imgSrc = 'https://perso.esiee.fr/~fouquoir/E4/HarryPotterQuiz/Gryffondor.png';
     }
     else if (9 <= this.score <= 10) {
       houseTxt.innerHTML = "You're in Ravenclaw !";
-      this.imgSrc = 'https://www.pngmart.com/files/12/Ravenclaw-House-PNG-Clipart.png';
+      this.imgSrc = 'https://perso.esiee.fr/~fouquoir/E4/HarryPotterQuiz/Serdaigle.png';
     } 
   }
 };
