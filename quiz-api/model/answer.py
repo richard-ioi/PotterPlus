@@ -1,6 +1,31 @@
 import json
 
 class Answer():
+	"""
+    A class used to represent a Question.
+
+    ...
+
+    Attributes
+    ----------
+    id : int
+        the answer id
+    questionID : string
+        the id of the associated question
+    text : string
+        the answer text
+    isCorrect : boolean
+        the answer value
+   
+    Methods
+    -------    
+    serialize(question):
+        serializes the answer to JSON.
+    
+    deserialize(dbJson):
+        deserializes json to Answer.
+    """
+
 	def __init__(self, id:int, questionID:int,  text: str, isCorrect: int):
 		self.id = id
 		self.questionID = questionID

@@ -3,7 +3,20 @@ from utils.dbUtils import connectDB
 from model.question import Question
 import service.answerService as answerService
 
+
 def insertQuestionRequest(question: Question):
+    """Creates request to insert data into the QUESTION table.
+
+    Parameters
+    ----------
+    question : Question
+        The question that is going to be inserted into the QUESTION table.
+
+    Returns
+    -------
+    string
+        Formatted string, insert request.
+    """
     if question.id != -1:
         request =  f'INSERT INTO QUESTION(ID, TEXT, TITLE, IMAGE, POSITION) VALUES ("{question.id}","{question.text}", "{question.title}", "{question.image}", {question.position});'
         return request
@@ -11,8 +24,14 @@ def insertQuestionRequest(question: Question):
         request =  f'INSERT INTO QUESTION(TEXT, TITLE, IMAGE, POSITION) VALUES ("{question.text}", "{question.title}", "{question.image}", {question.position});'
         return request
 
-#Get all questions.
 def getAllQuestions():
+    """Gets all the question recorded in the QUESTION table.
+
+    Returns
+    -------
+    list
+        List of all database questions.
+    """
     db = connectDB()
     cursor = db.cursor()
     questions = []
@@ -30,12 +49,18 @@ def getAllQuestions():
             questions.append(question)
         return questions
     except Exception as err:
-        #in case of exception, roolback the transaction
+        #in case of exception, rollback the transaction
         cursor.execute('rollback')
         raise err
 
-#Count all questions.
 def questionCount():
+    """Counts the questions in the QUESTION table.
+
+    Returns
+    -------
+    int
+        Number of questions recorded in the QUESTION table.
+    """
     db = connectDB()
     c = db.cursor()
     c.execute("SELECT COUNT(*) FROM QUESTION;")
@@ -44,8 +69,20 @@ def questionCount():
     db.close()
     return total
 
-#Checks to see if the position of the new question is taken.
 def isPositonTaken(qPosition):
+    """ Checks to see if the position of the new question is taken.
+
+    Parameters
+    ----------
+    qPosition : int
+        The position of the new question.
+
+    Returns
+    -------
+    boolean
+        True if the position is taken, False if it is free.
+
+    """
     db = connectDB()
     db.row_factory = lambda cursor, row: row[0]
     c = db.cursor()
@@ -54,22 +91,41 @@ def isPositonTaken(qPosition):
     print("IDS : ", positions)
     db.close() 
 
-    #Verifier que la position de la nouvelle question est différente de celles existantes
+    #Checks if the position if the new question is taken.
     for position in positions:
         if(qPosition == position):
             return True
     return False
 
-#Updates the value of of the existing positions.
 def updateQuestionPositions(position):
+    """ Updates the value of the existing positions.
+
+    Parameters
+    ----------
+    position : int
+        The position of the new question. All the questions' positons that are greater or equal that position are incremented.
+    """
     db = connectDB()
     db.cursor().execute("UPDATE QUESTION SET position = position+1 WHERE position >= ?;",[position])
     db.close()
 
 def createQuestion(newQuestion: Question):
-    #Create new question
+    """Creates the new question in the QUESTION table. 
+
+    The question and related answers are posted to the database.
+
+    Parameters
+    ----------
+    newQuestion : Question
+        The new question.
+
+    Returns
+    -------
+    tuple
+        Http response status.
+    """
     db = connectDB()
-    #Use Cursor explicitely, but can be replaced by db.execute() which is a short hand for db.cursor.execute().
+    #Use of Cursor explicitely, but can be replaced by db.execute() which is a short hand for db.cursor.execute().
     cursor = db.cursor()
     cursor.execute("begin")
     print(insertQuestionRequest(newQuestion))
@@ -96,6 +152,18 @@ def createQuestion(newQuestion: Question):
         raise err
 
 def deleteQuestionByPosition(position):
+    """Deletes question from database by position.
+
+    Parameters
+    ----------
+    positon : int
+        The position of the question to be deleted.
+
+    Returns
+    -------
+    tuple
+        Http response status.
+    """
     if(checkIfQuestionExistsByPosition(position)):
         answerService.deleteAnswerByQuestionID(getQuestionIDByPosition(position))
     else:
@@ -117,6 +185,18 @@ def deleteQuestionByPosition(position):
             raise err
             
 def getQuestionByPosition(position):
+    """Deletes question from database by position.
+
+    Parameters
+    ----------
+    positon : int
+        The position of the question to be deleted.
+
+    Returns
+    -------
+    tuple
+        Http response status.
+    """        
     db = connectDB()
     cursor = db.cursor()
     cursor.execute("begin")
@@ -140,22 +220,22 @@ def getQuestionByPosition(position):
         cursor.execute('rollback')
         raise err
 
-#Updates the value of the existing question positions if a question is added.
-def updateQuestionPositionsIncrease(minPosition, maxPosition):
-    db = connectDB()
-    db.cursor().execute(f'UPDATE QUESTION SET position = position+1 WHERE position >= {minPosition} AND position <= {maxPosition};')
-    db.cursor().execute("commit")
-    db.close()
-
-#Updates the value of the existing question positions if a question is added.
-def updateQuestionPositionsDecrease(minPosition, maxPosition):
-    db = connectDB()
-    db.cursor().execute(f'UPDATE QUESTION SET position = position-1 WHERE position >= {minPosition} AND position <= {maxPosition};')
-    db.cursor().execute("commit")
-    db.close()
-
 
 def updateQuestionByPosition(position: int, question: json):
+    """ Updates the question by it's position.
+
+    Parameters
+    ----------
+    positon : int
+        The position of the question to be updated.
+    question : json
+        The question to be updated.
+
+    Returns
+    -------
+    tuple
+        Http response status.
+    """
     newQuestion = Question.deserialize(question)
     if((getQuestionIDByPosition(position)[1])==404):
         return '',404
@@ -192,6 +272,21 @@ def updateQuestionByPosition(position: int, question: json):
         raise err
         
 def checkQuestionPosition(question: json):
+    """Checks the positon of the new question before posting it to database. 
+
+    The position of the new question is checked, and the existing positions are updated if necessary.
+    The new question is created.
+
+    Parameters
+    ----------
+    question : json
+        The new question.
+
+    Returns
+    -------
+    tuple
+        Http response status.
+    """
     newQuestion = Question.deserialize(question)
     if(newQuestion.position > questionCount()+1 or newQuestion.position < 0):
         return {"status":"KO"}, 400
@@ -205,12 +300,36 @@ def checkQuestionPosition(question: json):
 
 
 def checkIfQuestionExistsByPosition(position):
+    """Checks to see if a question exists at the position parameter.
+
+    Parameters
+    ----------
+    positon : int
+        The position of the question.
+
+    Returns
+    -------
+    boolean
+        True if the question at the position exists. Else false.
+    """
     if(getQuestionByPosition(position)[1]==404):
         return False
     else:
         return True
 
 def getQuestionIDByPosition(position):
+    """Gets question ID by position.
+
+    Parameters
+    ----------
+    positon : int
+        The position of the question.
+
+    Returns
+    -------
+    tuple
+        The question ID and the Http response status.
+    """
     db = connectDB()
     cursor = db.cursor()
     cursor.execute("begin")
