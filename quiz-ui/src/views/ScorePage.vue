@@ -2,6 +2,7 @@
 <br>
   <h2>Your score :</h2> 
   <h2 v-if="score" >{{ score }}/10 </h2>
+  <h3 v-if="participation"><center>You're at the position {{ position }}</center></h3>
   <div class="one">
     <div width="500" height="400" ref="imgHouse" ></div> 
   </div> 
@@ -11,7 +12,7 @@
   </div>
   <br>
   <router-link to="/" id=startBtn type="button" class="btn btn-outline-light" style="display:inline;  position: relative; float:right;">
-    Retour à l'écran d'accueil principal !
+    Back to the homepage !
   </router-link><br><br>
   <p style="display:inline">You can check yours and others players' ranking</p>
   
@@ -45,7 +46,8 @@ export default {
       score: 0,
       registeredScores: [],
       playerPosition: 0,
-      imgSrc: ''
+      imgSrc: '',
+      position: 0
     };
   },
   async created() {
@@ -60,6 +62,12 @@ export default {
     console.log("Registered Scores: ", this.registeredScores);
 
     const houseTxt = this.$refs.housing;
+
+    for (let index = 0; index < this.registeredScores.length; index++) {
+      if(this.score==this.registeredScores[index]){
+       this.position=index+1; 
+      }
+    }
     
     if (0 <= this.score <= 2) {
       houseTxt.innerHTML = "You're in Slytherin !";

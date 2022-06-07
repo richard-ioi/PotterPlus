@@ -5,10 +5,33 @@ from model.quizInfo import QuizInfo
 import service.questionService as QuestionServices
 
 def insertInfoRequest(participation: Participation):
+    """
+    A method used to get a SQL request by string to insert
+    a new score to the INFO table in the database
+
+    Returns
+    ------
+    string
+        request created
+    """
     request =  f'INSERT INTO INFO(PLAYER_NAME, SCORE, DATE) VALUES ("{participation.playerName}", "{participation.score}", strftime("%d/%m/%Y %H:%M:%S",datetime("now")));'
     return request
 
 def getQuizInfo():
+    """
+    A method used to create a QuizInfo object, which stores all players scores
+    by looking at the table INFO in the database
+
+    Returns
+    ------
+    tuple
+        The QuizInfo serialized in a json object and a http response status
+
+    Raises
+    ------
+    err
+        If there is an exception to the database connection.
+    """
     db = connectDB()
     cursor = db.cursor()
     size = QuestionServices.questionCount()
@@ -32,6 +55,20 @@ def getQuizInfo():
         raise err
 
 def deleteAllQuizInfo():
+    """
+    A method used to clear the INFO table of the database, which is used to
+    store all players' scores
+
+    Returns
+    ------
+    tuple
+        http response status
+
+    Raises
+    ------
+    err
+        If there is an exception to the database connection.
+    """
     db = connectDB()
     cursor = db.cursor()
     cursor.execute("begin")
@@ -48,6 +85,19 @@ def deleteAllQuizInfo():
 
 
 def insertScore(participation):
+    """
+    A method used to insert in database the score given by a participation
+
+    Parameters 
+    ----------
+    participation : Participation
+        Object containing the name of the player and its score for the game
+
+    Raises
+    ------
+    err
+        If there is an exception to the database connection.
+    """
     db = connectDB()
     cursor = db.cursor()
     cursor.execute("begin")

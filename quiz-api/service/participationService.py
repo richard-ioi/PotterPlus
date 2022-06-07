@@ -5,6 +5,21 @@ from model.question import Question
 import service.questionService as QuestionServices
 
 def createParticipation(participationParameters: json):
+    """
+    A method used to create a Participation object thanks to
+    the playerName and the answers list is the participationParameters parameter
+
+    Parameters 
+    ----------
+    participationParameters : json
+        json object containing the playerName and the list of answers' indexes
+        of the player
+
+    Returns 
+    ----------
+    Participation
+        The Participation object
+    """
     playerName = participationParameters["playerName"]
     answers = participationParameters["answers"]
     if(len(answers)!=QuestionServices.questionCount()):
