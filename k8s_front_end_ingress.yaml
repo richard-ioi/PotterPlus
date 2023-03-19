@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-quiz-app
+spec:
+  rules:
+  - host: "front-end.localhost"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: quiz-ui-service
+            port:
+              number: 4545
