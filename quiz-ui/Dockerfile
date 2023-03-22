@@ -1,7 +1,7 @@
 FROM node:lts-alpine
 
 # install simple http server for serving static content
-#RUN npm install vite
+RUN npm install -g http-server
 
 # make the 'app' folder the current working directory
 WORKDIR /app
@@ -10,7 +10,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # install project dependencies
-RUN npm install
+RUN npm install 
 
 # copy project files and folders to the current working directory (i.e. 'app' folder)
 COPY . .
@@ -18,5 +18,5 @@ COPY . .
 # build app for production with minification
 RUN npm run build
 
-EXPOSE 3000
-CMD [ "npm", "run", "dev"]
+EXPOSE 8080
+CMD [ "http-server", "dist" ]

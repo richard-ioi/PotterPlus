@@ -3,10 +3,11 @@ kind: Service
 metadata:
   name: quiz-api-service
 spec:
+  selector:
+    app: quiz-app
+    tier: quiz-api
   ports:
     - name: http
       targetPort: 5000 # This is the port exposed by the container
       port: 5000 # This is the port exposed by the service
-  type: ClusterIP
-  selector:
-    app: quiz-api
+  
