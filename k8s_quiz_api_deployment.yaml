@@ -1,25 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: quiz-api
+  name: quiz-api-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: quiz-app
-      tier : quiz-api
-      track : stable
+      app: quiz-api
   template:
     metadata:
       labels:
-        app: quiz-app
-        tier : quiz-api
-        track : stable
+        app: quiz-api
     spec:
       containers:
         - name: quiz-api
           image: richardioi/quiz-api:latest   
           imagePullPolicy: Always
-          ports:
-            - name: http
-              containerPort: 5000

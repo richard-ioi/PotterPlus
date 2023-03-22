@@ -3,12 +3,9 @@ kind: Service
 metadata:
   name: quiz-ui-service
 spec:
-  selector:
-    app: quiz-app
-    tier: quiz-ui
   ports:
     - name: http
-      targetPort: 3000 # This is the port exposed by the container
-      port: 3000 # This is the port exposed by the service
-      nodePort: 31000
-  type: LoadBalancer
+      targetPort: 8080 # This is the port exposed by the container
+      port: 8080 # This is the port exposed by the service
+  selector:
+    app: quiz-ui

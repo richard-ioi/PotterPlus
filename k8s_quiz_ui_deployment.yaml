@@ -1,20 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: quiz-ui
+  name: quiz-ui-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: quiz-app
-      tier : quiz-ui
-      track: stable
+      app: quiz-ui
   template:
     metadata:
       labels:
-        app: quiz-app
-        tier : quiz-ui
-        track: stable
+        app: quiz-ui
     spec:
       containers:
       - name: quiz-ui
