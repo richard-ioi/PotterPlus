@@ -14,7 +14,7 @@ spec:
             name: quiz-ui-service
             port:
               number: 8080
-      - path: "/api/*"
+      - path: "/api"
         pathType: Prefix
         backend:
           service:

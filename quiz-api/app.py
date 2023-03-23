@@ -11,18 +11,18 @@ app = Flask(__name__)
 CORS(app)
 
 
-@app.route('/')
+@app.route('/api')
 def hello_world():
     x = 'world'
     return f"Hello, {x}"
 
 
-@app.route('/quiz-info', methods=['GET'])
+@app.route('/api/quiz-info', methods=['GET'])
 def GetQuizInfo():
     return quizInfoService.getQuizInfo()
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/api/login', methods=['POST'])
 def SendUserLogin():
     payload = request.get_json()
     if 'Vive l\'ESIEE !' == payload['password']:
@@ -32,7 +32,7 @@ def SendUserLogin():
         return '', 401
 
 
-@app.route('/questions', methods=['POST'])
+@app.route('/api/questions', methods=['POST'])
 def PostQuestion():
     try:
         if (decode_token((request.headers.get('Authorization'))[7:]) == 'quiz-app-admin'):
@@ -44,12 +44,12 @@ def PostQuestion():
         return '', 401
 
 
-@app.route('/questions/<question_position>', methods=['GET'])
+@app.route('/api/questions/<question_position>', methods=['GET'])
 def GetQuestion(question_position):
     return questionService.getQuestionByPosition(question_position)
 
 
-@app.route('/questions/<question_position>', methods=['PUT'])
+@app.route('/api/questions/<question_position>', methods=['PUT'])
 def UpdateQuestion(question_position):
     try:
         if (decode_token((request.headers.get('Authorization'))[7:]) == 'quiz-app-admin'):
@@ -59,7 +59,7 @@ def UpdateQuestion(question_position):
         return '', 400
 
 
-@app.route('/questions/<question_position>', methods=['DELETE'])
+@app.route('/api/questions/<question_position>', methods=['DELETE'])
 def DeleteQuestion(question_position):
     try:
         if (decode_token((request.headers.get('Authorization'))[7:]) == 'quiz-app-admin'):
@@ -70,7 +70,7 @@ def DeleteQuestion(question_position):
         return '', 401
 
 
-@app.route('/participations', methods=['POST'])
+@app.route('/api/participations', methods=['POST'])
 def SaveParticipation():
     try:
         participationParameters = request.get_json()
@@ -82,7 +82,7 @@ def SaveParticipation():
         return '', 400
 
 
-@app.route('/participations', methods=['DELETE'])
+@app.route('/api/participations', methods=['DELETE'])
 def DeleteParticipation():
     try:
         if (decode_token((request.headers.get('Authorization'))[7:]) == 'quiz-app-admin'):

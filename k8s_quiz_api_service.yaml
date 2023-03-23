@@ -6,7 +6,7 @@ spec:
   ports:
     - name: http
       targetPort: 5000 # This is the port exposed by the container
-      port: 5000 # This is the port exposed by the service
-  type: ClusterIP
+      port: 8080 # This is the port exposed by the service
+  #type: ClusterIP
   selector:
     app: quiz-api
