@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mail-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mail-api
+  template:
+    metadata:
+      labels:
+        app: mail-api
+    spec:
+      containers:
+      - name: mail-api
+        image: richardioi/mail-api:latest
+        imagePullPolicy: Always

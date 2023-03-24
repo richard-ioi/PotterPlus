@@ -1,3 +1,4 @@
+import requests
 from flask import Flask, request
 from flask_cors import CORS
 from utils.jwt_utils import build_token
@@ -77,6 +78,15 @@ def SaveParticipation():
         participation = participationService.createParticipation(
             participationParameters)
         quizInfoService.insertScore(participation)
+        #headers = {'args': ['richard.fouquoire@gmail.com', 'Résultat de score', participation]}
+        json_data = {
+            'args': [
+                'richard.fouquoire@gmail.com',
+                'Résultats de la participation',
+                participation.playerName+' a obtenu un score de '+str(participation.score),
+            ],
+        }
+        r = requests.post('http://mail-api-service.default.svc.cluster.local:5000/commands/mail', json=json_data)
         return serialize(participation), 200
     except Exception:
         return '', 400
