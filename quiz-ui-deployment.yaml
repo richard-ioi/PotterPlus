@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quiz-ui-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quiz-ui
+  template:
+    metadata:
+      labels:
+        app: quiz-ui
+    spec:
+      containers:
+      - name: quiz-ui
+        image: richardioi/quiz-ui:latest
+        imagePullPolicy: Always

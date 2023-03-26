@@ -11,6 +11,10 @@ from model.participation import serialize
 app = Flask(__name__)
 CORS(app)
 
+@app.route('/')
+def hello_api():
+    x = 'world'
+    return f"Hello, {x}"
 
 @app.route('/api')
 def hello_world():
